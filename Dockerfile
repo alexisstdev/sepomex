@@ -230,11 +230,11 @@ USER nobody
 # Set the RAILS and PORT default values:
 ENV HOME=/workspaces/sepomex \
     RAILS_ENV=production \
-    DEPLOY_NAME=${DEPLOY_NAME} \
-    RAILS_FORCE_SSL=yes \
+    DEPLOY_NAME=production \
+    RAILS_FORCE_SSL=no \
     RAILS_LOG_TO_STDOUT=yes \
     RAILS_SERVE_STATIC_FILES=yes \
-    PORT=80
+    PORT=3000
 
 # Test if the rails app loads:
 RUN SECRET_KEY_BASE=10167c7f7654ed02b3557b05b88ece rails secret > /dev/null
@@ -245,7 +245,10 @@ WORKDIR /workspaces/sepomex
 # Generate the sqlite production database:
 RUN rails db:create \
  && rails db:migrate \
- && rake data:load
+ && rake data:load \
+ && chmod -R 777 db/ \
+ && chmod -R 777 log/ \
+ && chmod -R 777 tmp/
 
 # Set the entrypoint script:
 ENTRYPOINT [ "/workspaces/sepomex/bin/entrypoint" ]
