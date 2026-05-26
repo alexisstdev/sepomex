@@ -243,12 +243,11 @@ RUN SECRET_KEY_BASE=10167c7f7654ed02b3557b05b88ece rails secret > /dev/null
 WORKDIR /workspaces/sepomex
 
 # Generate the sqlite production database:
-RUN rails db:create \
+RUN mkdir -p log tmp db \
+ && rails db:create \
  && rails db:migrate \
  && rake data:load \
- && chmod -R 777 db/ \
- && chmod -R 777 log/ \
- && chmod -R 777 tmp/
+ && chmod -R 777 db log tmp
 
 # Set the entrypoint script:
 ENTRYPOINT [ "/workspaces/sepomex/bin/entrypoint" ]
